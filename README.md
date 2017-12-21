@@ -1,6 +1,14 @@
 # Kubernetes on AWS - Quick Start
+The goal of this quick start is to build a complete Kubernetes ecosystem so developers don't have to. This allows
+developers to focus on what they're good at - writing code - and removes the need for them to do R&D to determine
+which components to install to build a Kubernetes stack.
+
+The quick start takes an opinionated view on selecting the appropriate components to provision a non-production
+Kubernetes environment, and allows this environment to be created by running a script. 
+
 This quick start will build a Kubernetes ecosystem complete with the following components:
 
+## For MVP
 * Kubernetes cluster
 * Consolidated logging using EFK
 * Monitoring using Prometheus
@@ -8,25 +16,32 @@ This quick start will build a Kubernetes ecosystem complete with the following c
 * Git repository using AWS CodeCommit
 * CI/CD Pipeline using AWS CodePipeline
 
-The goal of the quick start is to allow developers simply to develop and push code to a repo. Building and deploying the applicaiton to Kubernetes is taken care of, as is logging and monitoring.
+## Post MVP
+* Secrets management. Probably integrating Hashicorp Vault
+* ALB Ingress
+* Distributed tracing. Need to decide which framework. Jaeger, X-Ray, etc. Or is the Istio tracing OK for now?
+* Service mesh - probably Istio
+* Network Policy using plugin - probably Calico
+
+## Post-post MVP
+While MVP will take an opinionated view of the components to install, post-MVP should allow selection of options for 
+the various components. For example, allow selection of either Istio or Linkerd for the service mesh
+
+The goal of the quick start is to make life easier for Developers starting to use Kubernetes. The quick start
+provisions all the services necessary for building and deploying an application to Kubernetes, as well as logging and 
+monitoring and other services.
+
 Developers should not have to:
 * decide which services to use for common features such as logging & monitoring
 * spend their time deploying and maintaining those services
 * spend their time connecting those services together
 
-This repo takes an opinionated view of which services are most commonly used in building a Kubernetes ecosystem, and provides a script to deploy and connect those services. This repo is successful if a developer only needs to:
+This repo takes an opinionated view of which services are most commonly used in building a Kubernetes ecosystem, and 
+provides a script to deploy and connect those services. This repo is successful if a developer only needs to:
 * clone the repo
 * run the quick-start script after making a few configuration selections
 * add their code to the repo created by the script
 * push their code
-
-The Kubernetes ecosystem built by this repo will take care of:
-* building and deploying the code
-* collecting all logs and pushing to a central ElasticSearch stack
-* monitoring the Kubernetes cluster
-* scaling the Pods and Kubernetes worker nodes
-
-In future this repo could be extended to provide more than one option per service. For example, at the moment it assumes Prometheus for monitoring, but in future it may provide an option to use a HIG stack (Heapster, InfluxDB, Grafana).
 
 ## Pre-requisites
 ### MacOS only
@@ -35,7 +50,7 @@ Initial version of this quick start runs on MacOS only. Volunteers are more than
 
 ### sudo access
 
-The install script requires sudo access and will prompt for your password
+The install script requires sudo access and will prompt for your password at times
 
 ### Install AWS cli
 
@@ -64,6 +79,10 @@ The AWS user profile must have these http://docs.aws.amazon.com/IAM/latest/UserG
 
 Please review these links for additional info on IAM permissions:
 https://github.com/kubernetes/kops/blob/master/docs/aws.md#setup-iam-user. https://github.com/kubernetes/kops/blob/master/docs/iam_roles.md
+
+### Configure your preferences before running the script
+
+Preferences are stored in ./quick-start.properties. Open this file and configure your settings before running ./quick-start.sh
 
 ## Run quick-start.sh
 Run the following:
