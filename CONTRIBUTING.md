@@ -30,3 +30,6 @@ To contribute to the repo use pull requests. The process is as follows:
 
 If you're not familiar with using pull requests, a useful tutorial is here: https://www.digitalocean.com/community/tutorials/how-to-create-a-pull-request-on-github
 
+## Refer to
+Some of the new features can be implemented by referring to our Kubernetes workshop: https://github.com/aws-samples/aws-workshop-for-kubernetes
+The code/scripts from the workshop repo can be copied here, then refactored to ensure an integrated environment.
