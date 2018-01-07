@@ -5,6 +5,13 @@ function getprop {
     grep "${1}" quick-start.properties|cut -d'=' -f2
 }
 
+region=$(getprop 'aws.region')
+account=`aws sts get-caller-identity --output text --query 'Account'`
+loggroup=$(getprop 'k8s.clustername')-logs
+
+#delete the busybox test pod
+kubectl delete -f ./cluster-logging/test/write-logs.yaml
+
 #Consolidated logging - deploy an EFK stack
 echo cleaning up EFK stack for consolidated logging
 
@@ -27,17 +34,19 @@ echo deleting ElasticSearch
 aws es delete-elasticsearch-domain --domain-name kubernetes-logs
 
 #delete the log group
-aws logs delete-log-group --log-group-name $(getprop 'k8s.clustername').logs
+echo deleting the log group $loggroup
+aws logs delete-log-group --log-group-name $loggroup --region $region
 
 #delete the access keys
 echo deleting access keys
 output=`aws iam list-access-keys --user-name fluentd`
-echo $output
-numberaccesskeys=`echo ${output} | jq '.AccessKeyMetadata | length' | tr -d '"'`
-echo number of access keys to be deleted is: $numberaccesskeys
-for (( i=0; i<$numberaccesskeys; i++))
+for accesskey in $(echo "${output}" | jq -r '.AccessKeyMetadata[] | "\(.AccessKeyId)"');
 do
-    accesskey=`echo ${output} | jq '.AccessKeyMetadata[$i].AccessKeyId' | tr -d '"'`
-    echo deleting access key: $accesskey
+    echo deleting access key ${accesskey}
     aws iam delete-access-key --access-key-id $accesskey --user-name fluentd
 done
+
+#delete the Fluentd user
+echo deleting fluentd user
+aws iam delete-user-policy --user-name fluentd --policy-name FluentdPolicy
+aws iam delete-user --user-name fluentd

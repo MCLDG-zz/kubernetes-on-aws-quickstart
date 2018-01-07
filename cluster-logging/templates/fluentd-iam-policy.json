@@ -7,7 +7,7 @@
                 "logs:DescribeLogGroups"
             ],
             "Resource": [
-                "arn:aws:logs:us-east-1:<account>:log-group::log-stream:*"
+                "arn:aws:logs:<region>:<account>:log-group::log-stream:*"
             ]
         },
         {
@@ -16,7 +16,7 @@
                 "logs:DescribeLogStreams"
             ],
             "Resource": [
-                "arn:aws:logs:us-east-1:<account>:log-group:<log-group>:log-stream:*"
+                "arn:aws:logs:<region>:<account>:log-group:<log-group>:log-stream:*"
             ]
         },
         {
@@ -26,7 +26,7 @@
                 "logs:PutLogEvents"
             ],
             "Resource": [
-                "arn:aws:logs:us-east-1:<account>:log-group:<log-group>:log-stream:fluentd-cloudwatch"
+                "arn:aws:logs:<region>:<account>:log-group:<log-group>:log-stream:fluentd-cloudwatch"
             ]
         }
     ]

@@ -39,20 +39,25 @@ while true; do
 done
 
 #create a CloudWatch log group. Fluentd will be configured to push logs to this log group
-echo create a CloudWatch log group
+echo create a CloudWatch log group: $loggroup
 aws logs create-log-group --log-group-name $loggroup --region $region
 
 #now setup Fluentd
 #first, create the Fluentd user
 echo deploying fluentd
+echo creating fluentd user
 aws iam create-user --user-name fluentd
 
 #the policy requires an account ID and a log group name
+echo creating policies for user fluentd
 sed "s/<account>/$account/g" ./cluster-logging/templates/fluentd-iam-policy.json | \
+sed "s/<region>/$region/g" | \
 sed "s/<log-group>/$loggroup/g"  > ./cluster-logging/templates/temp-fluentd-iam-policy.json
 aws iam put-user-policy --user-name fluentd --policy-name FluentdPolicy --policy-document file://cluster-logging/templates/temp-fluentd-iam-policy.json
 rm ./cluster-logging/templates/temp-fluentd-iam-policy.json
 
+#create access keys for user
+echo creating access keys for user fluentd
 output=`aws iam create-access-key --user-name fluentd`
 echo $output
 
@@ -60,11 +65,10 @@ echo $output
 accesskey=`echo ${output} | jq '.AccessKey.AccessKeyId'`
 secretaccesskey=`echo ${output} | jq '.AccessKey.SecretAccessKey'`
 
-echo $accesskey
+echo access key: $accesskey
 
-#cp ./cluster-logging/templates/fluentd-ds.yaml ./cluster-logging/templates/fluentd-ds.yaml.bu
 sed "s/<AWS_ACCESS_KEY>/$accesskey/g" ./cluster-logging/templates/fluentd-ds.yaml | \
-sed "s|<AWS_SECRET_KEY>|${secretaccesskey}|g" | \
+sed "s|<AWS_SECRET_KEY>|$secretaccesskey|g" | \
 sed "s/<AWS_REGION>/$region/g" > ./cluster-logging/templates/temp-fluentd-ds.yaml
 
 sed "s/kubernetes-logs/$loggroup/g" ./cluster-logging/templates/fluentd-configmap.yaml \
@@ -83,11 +87,8 @@ kubectl create -f ./cluster-logging/templates/temp-fluentd-configmap.yaml
 kubectl create -f ./cluster-logging/templates/fluentd-svc.yaml
 kubectl create -f ./cluster-logging/templates/temp-fluentd-ds.yaml
 
-#sleep to allow time for the pods to change to 'running' status
-sleep 30
-
 #check that the logging component is working correctly
-./test.sh
+./cluster-logging/test.sh
 
 #delete the temp fluentd config, which we created above
 rm ./cluster-logging/templates/temp-fluentd-ds.yaml
