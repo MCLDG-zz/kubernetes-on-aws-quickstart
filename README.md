@@ -1,5 +1,5 @@
 # Kubernetes on AWS - Quick Start
-The goal of this quick start is to build a complete Kubernetes ecosystem so developers don't have to. This allows
+The goal of this quick start is to build a complete Kubernetes ecosystem on AWS so developers don't have to. This allows
 developers to focus on what they're good at - writing code - and removes the need for them to do R&D to determine
 which components to install to build a Kubernetes stack.
 
@@ -9,7 +9,7 @@ Kubernetes environment, and allows this environment to be created by running a s
 This quick start will build a Kubernetes ecosystem complete with the following components:
 
 ## For MVP
-* Kubernetes cluster
+* Kubernetes cluster (provisioned using Kops)
 * Consolidated logging using EFK
 * Monitoring using Prometheus
 * Auto-scaling (Pods and Cluster worker nodes)
@@ -27,6 +27,7 @@ This quick start will build a Kubernetes ecosystem complete with the following c
 While MVP will take an opinionated view of the components to install, post-MVP should allow selection of options for 
 the various components. For example, allow selection of either Istio or Linkerd for the service mesh
 
+## Making life easier
 The goal of the quick start is to make life easier for Developers starting to use Kubernetes. The quick start
 provisions all the services necessary for building and deploying an application to Kubernetes, as well as logging and 
 monitoring and other services.
@@ -94,4 +95,3 @@ The script is mostly automatic. Input will be required in the following places:
 * Press RETURN to continue...
 * You'll need to enter your password for SUDO to run
 * HEAD is now at... - no need to do anything here, it may just take a while to complete the download
-* 
