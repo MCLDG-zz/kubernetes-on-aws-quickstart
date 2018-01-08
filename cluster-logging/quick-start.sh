@@ -54,7 +54,6 @@ sed "s/<account>/$account/g" ./cluster-logging/templates/fluentd-iam-policy.json
 sed "s/<region>/$region/g" | \
 sed "s/<log-group>/$loggroup/g"  > ./cluster-logging/templates/temp-fluentd-iam-policy.json
 aws iam put-user-policy --user-name fluentd --policy-name FluentdPolicy --policy-document file://cluster-logging/templates/temp-fluentd-iam-policy.json
-rm ./cluster-logging/templates/temp-fluentd-iam-policy.json
 
 #create access keys for user
 echo creating access keys for user fluentd
@@ -93,3 +92,4 @@ kubectl create -f ./cluster-logging/templates/temp-fluentd-ds.yaml
 #delete the temp fluentd config, which we created above
 rm ./cluster-logging/templates/temp-fluentd-ds.yaml
 rm ./cluster-logging/templates/temp-fluentd-configmap.yaml
+rm ./cluster-logging/templates/temp-fluentd-iam-policy.json

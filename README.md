@@ -95,3 +95,13 @@ The script is mostly automatic. Input will be required in the following places:
 * Press RETURN to continue...
 * You'll need to enter your password for SUDO to run
 * HEAD is now at... - no need to do anything here, it may just take a while to complete the download
+
+## Once the quick start script is complete
+### Grafana
+You can use port forwarding to open the Grafana dashboard in your browser. Run this command 
+
+```bash
+kubectl port-forward $(kubectl get pod -l app=grafana -o jsonpath={.items[0].metadata.name} -n monitoring) 3000 -n monitoring
+```
+
+Then open the following URL in your browser: `http://localhost:3000/`
